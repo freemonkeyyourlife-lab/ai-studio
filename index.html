@@ -4,12 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Studio</title>
+
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: #0b0d12;
       color: white;
+      font-family: Arial, sans-serif;
     }
 
     .app {
@@ -34,12 +35,11 @@
       width: 100%;
       margin: 7px 0;
       padding: 12px;
-      text-align: left;
       background: #1a1e28;
       color: white;
       border: 0;
       border-radius: 8px;
-      cursor: pointer;
+      text-align: left;
     }
 
     .main {
@@ -58,16 +58,16 @@
     textarea {
       width: 100%;
       height: 160px;
+      box-sizing: border-box;
       margin: 15px 0;
       padding: 15px;
       background: #0c0f15;
       color: white;
       border: 1px solid #303644;
       border-radius: 8px;
-      resize: vertical;
     }
 
-    .generate {
+    button.generate {
       padding: 13px 22px;
       background: #705cff;
       color: white;
@@ -79,7 +79,13 @@
 
     #status {
       margin-top: 20px;
-      color: #aaa;
+      white-space: pre-wrap;
+    }
+
+    #result img {
+      max-width: 100%;
+      margin-top: 20px;
+      border-radius: 12px;
     }
   </style>
 </head>
@@ -105,7 +111,6 @@
   <main class="main">
 
     <h1>AI Studio</h1>
-    <p>Bildgenerator</p>
 
     <div class="card">
 
@@ -122,6 +127,8 @@
 
       <div id="status"></div>
 
+      <div id="result"></div>
+
     </div>
 
   </main>
@@ -137,6 +144,9 @@ async function generate() {
   const status =
     document.getElementById("status");
 
+  const result =
+    document.getElementById("result");
+
   if (!prompt) {
     status.textContent =
       "Bitte zuerst einen Prompt eingeben.";
@@ -144,7 +154,9 @@ async function generate() {
   }
 
   status.textContent =
-    "Auftrag wird gesendet...";
+    "Bild wird generiert...";
+
+  result.innerHTML = "";
 
   try {
 
@@ -158,22 +170,63 @@ async function generate() {
       })
     });
 
-    const data = await response.json();
+    const raw = await response.text();
+
+    console.log("SERVER:", raw);
+
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      status.textContent =
+        "SERVER-ANTWORT:\n" + raw;
+      return;
+    }
 
     if (!response.ok) {
-      throw new Error(
-        data.error || "Fehler"
-      );
+      status.textContent =
+        "FEHLER:\n" +
+        (data.error || JSON.stringify(data));
+      return;
     }
 
     status.textContent =
-      "Auftrag angenommen: " + data.prompt;
+      "Antwort erhalten.";
+
+    if (Array.isArray(data.output)) {
+
+      for (const url of data.output) {
+
+        const img =
+          document.createElement("img");
+
+        img.src = url;
+
+        result.appendChild(img);
+      }
+
+    } else if (typeof data.output === "string") {
+
+      const img =
+        document.createElement("img");
+
+      img.src = data.output;
+
+      result.appendChild(img);
+
+    } else {
+
+      status.textContent =
+        "Replicate-Antwort:\n" +
+        JSON.stringify(data, null, 2);
+    }
 
   } catch (error) {
 
     status.textContent =
-      "Fehler: " + error.message;
-
+      "FEHLER:\n" +
+      error.message;
   }
 }
 </script>
