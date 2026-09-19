@@ -4,12 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Studio</title>
-
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -23,34 +18,28 @@
     }
 
     .sidebar {
-      width: 240px;
+      width: 220px;
       background: #11141c;
-      border-right: 1px solid #272b36;
       padding: 20px;
     }
 
     .logo {
       font-size: 24px;
       font-weight: bold;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .nav button {
+      display: block;
       width: 100%;
+      margin: 7px 0;
+      padding: 12px;
       text-align: left;
-      margin-bottom: 8px;
-      padding: 13px;
-      background: transparent;
-      color: #ddd;
+      background: #1a1e28;
+      color: white;
       border: 0;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 15px;
-    }
-
-    .nav button:hover {
-      background: #202532;
-      color: white;
     }
 
     .main {
@@ -58,87 +47,39 @@
       padding: 30px;
     }
 
-    .top {
-      margin-bottom: 30px;
-    }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: 32px;
-    }
-
-    .subtitle {
-      color: #8d94a3;
-    }
-
     .card {
+      max-width: 850px;
       background: #141821;
       border: 1px solid #292e3a;
       border-radius: 14px;
-      padding: 24px;
-      max-width: 900px;
+      padding: 25px;
     }
 
     textarea {
       width: 100%;
-      min-height: 180px;
-      margin-top: 20px;
-      padding: 16px;
+      height: 160px;
+      margin: 15px 0;
+      padding: 15px;
       background: #0c0f15;
       color: white;
       border: 1px solid #303644;
-      border-radius: 10px;
+      border-radius: 8px;
       resize: vertical;
-      font-size: 15px;
     }
 
     .generate {
-      margin-top: 15px;
-      padding: 13px 20px;
-      border: 0;
-      border-radius: 9px;
+      padding: 13px 22px;
       background: #705cff;
       color: white;
-      font-weight: bold;
+      border: 0;
+      border-radius: 8px;
       cursor: pointer;
-    }
-
-    .generate:hover {
-      background: #806eff;
+      font-weight: bold;
     }
 
     #status {
-      margin-top: 18px;
-      color: #9ba2b1;
-    }
-
-    @media (max-width: 700px) {
-      .sidebar {
-        width: 75px;
-        padding: 10px;
-      }
-
-      .logo {
-        font-size: 0;
-      }
-
-      .logo::after {
-        content: "AI";
-        font-size: 20px;
-      }
-
-      .nav button {
-        font-size: 0;
-        text-align: center;
-      }
-
-      .nav button::first-letter {
-        font-size: 20px;
-      }
-
-      .main {
-        padding: 20px;
-      }
+      margin-top: 20px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -151,40 +92,32 @@
     <div class="logo">AI Studio</div>
 
     <div class="nav">
-      <button onclick="openSection('Chat')">💬 Chat</button>
-      <button onclick="openSection('Charaktere')">👤 Charaktere</button>
-      <button onclick="openSection('Bilder')">🖼️ Bilder</button>
-      <button onclick="openSection('Videos')">🎬 Videos</button>
-      <button onclick="openSection('Galerie')">🗂️ Galerie</button>
-      <button onclick="openSection('Export')">📦 Export</button>
-      <button onclick="openSection('Provider')">⚙️ Provider</button>
+      <button>💬 Chat</button>
+      <button>👤 Charaktere</button>
+      <button>🖼️ Bilder</button>
+      <button>🎬 Videos</button>
+      <button>🗂️ Galerie</button>
+      <button>📦 Export</button>
+      <button>⚙️ Provider</button>
     </div>
   </aside>
 
   <main class="main">
 
-    <div class="top">
-      <h1 id="title">AI Studio</h1>
-      <div class="subtitle" id="subtitle">
-        Deine zentrale KI-Plattform
-      </div>
-    </div>
+    <h1>AI Studio</h1>
+    <p>Bildgenerator</p>
 
     <div class="card">
 
-      <h2 id="cardTitle">Neuen Auftrag erstellen</h2>
-
-      <p>
-        Beschreibe, was du erstellen möchtest.
-      </p>
+      <h2>Neues Bild</h2>
 
       <textarea
         id="prompt"
-        placeholder="Zum Beispiel: Erstelle ein Bild von einer futuristischen Stadt bei Nacht..."
+        placeholder="Beschreibe dein Bild..."
       ></textarea>
 
       <button class="generate" onclick="generate()">
-        Generieren
+        Bild generieren
       </button>
 
       <div id="status"></div>
@@ -196,72 +129,53 @@
 </div>
 
 <script>
-
-function openSection(section) {
-
-  document.getElementById("title").textContent = section;
-
-  document.getElementById("subtitle").textContent =
-    "AI Studio · " + section;
-
-  document.getElementById("cardTitle").textContent =
-    section + " verwalten";
-
-  document.getElementById("status").textContent = "";
-
-}
-
 async function generate() {
-  const prompt = document.getElementById("prompt").value.trim();
-  const status = document.getElementById("status");
+
+  const prompt =
+    document.getElementById("prompt").value.trim();
+
+  const status =
+    document.getElementById("status");
 
   if (!prompt) {
-    status.textContent = "Bitte zuerst einen Prompt eingeben.";
+    status.textContent =
+      "Bitte zuerst einen Prompt eingeben.";
     return;
   }
 
-  status.textContent = "Auftrag wird gesendet...";
+  status.textContent =
+    "Auftrag wird gesendet...";
 
   try {
+
     const response = await fetch("/api/generate", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({
+        prompt: prompt
+      })
     });
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Fehler");
+      throw new Error(
+        data.error || "Fehler"
+      );
     }
 
     status.textContent =
       "Auftrag angenommen: " + data.prompt;
 
   } catch (error) {
+
     status.textContent =
       "Fehler: " + error.message;
+
   }
 }
-
-  const prompt =
-    document.getElementById("prompt").value.trim();
-
-  if (!prompt) {
-
-    document.getElementById("status").textContent =
-      "Bitte zuerst einen Prompt eingeben.";
-
-    return;
-  }
-
-  document.getElementById("status").textContent =
-    "Auftrag angenommen: " + prompt;
-
-}
-
 </script>
 
 </body>
