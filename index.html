@@ -211,7 +211,40 @@ function openSection(section) {
 
 }
 
-function generate() {
+async function generate() {
+  const prompt = document.getElementById("prompt").value.trim();
+  const status = document.getElementById("status");
+
+  if (!prompt) {
+    status.textContent = "Bitte zuerst einen Prompt eingeben.";
+    return;
+  }
+
+  status.textContent = "Auftrag wird gesendet...";
+
+  try {
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ prompt })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Fehler");
+    }
+
+    status.textContent =
+      "Auftrag angenommen: " + data.prompt;
+
+  } catch (error) {
+    status.textContent =
+      "Fehler: " + error.message;
+  }
+}
 
   const prompt =
     document.getElementById("prompt").value.trim();
