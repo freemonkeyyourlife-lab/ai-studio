@@ -4,14 +4,232 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Studio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0b0d12;
+      color: white;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 240px;
+      background: #11141c;
+      border-right: 1px solid #272b36;
+      padding: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    .nav button {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 8px;
+      padding: 13px;
+      background: transparent;
+      color: #ddd;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .nav button:hover {
+      background: #202532;
+      color: white;
+    }
+
+    .main {
+      flex: 1;
+      padding: 30px;
+    }
+
+    .top {
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 32px;
+    }
+
+    .subtitle {
+      color: #8d94a3;
+    }
+
+    .card {
+      background: #141821;
+      border: 1px solid #292e3a;
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 900px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      margin-top: 20px;
+      padding: 16px;
+      background: #0c0f15;
+      color: white;
+      border: 1px solid #303644;
+      border-radius: 10px;
+      resize: vertical;
+      font-size: 15px;
+    }
+
+    .generate {
+      margin-top: 15px;
+      padding: 13px 20px;
+      border: 0;
+      border-radius: 9px;
+      background: #705cff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .generate:hover {
+      background: #806eff;
+    }
+
+    #status {
+      margin-top: 18px;
+      color: #9ba2b1;
+    }
+
+    @media (max-width: 700px) {
+      .sidebar {
+        width: 75px;
+        padding: 10px;
+      }
+
+      .logo {
+        font-size: 0;
+      }
+
+      .logo::after {
+        content: "AI";
+        font-size: 20px;
+      }
+
+      .nav button {
+        font-size: 0;
+        text-align: center;
+      }
+
+      .nav button::first-letter {
+        font-size: 20px;
+      }
+
+      .main {
+        padding: 20px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <h1>AI Studio</h1>
-  <p>Das Projekt läuft.</p>
 
-  <button onclick="alert('AI Studio funktioniert!')">
-    Test
-  </button>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo">AI Studio</div>
+
+    <div class="nav">
+      <button onclick="openSection('Chat')">💬 Chat</button>
+      <button onclick="openSection('Charaktere')">👤 Charaktere</button>
+      <button onclick="openSection('Bilder')">🖼️ Bilder</button>
+      <button onclick="openSection('Videos')">🎬 Videos</button>
+      <button onclick="openSection('Galerie')">🗂️ Galerie</button>
+      <button onclick="openSection('Export')">📦 Export</button>
+      <button onclick="openSection('Provider')">⚙️ Provider</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <div class="top">
+      <h1 id="title">AI Studio</h1>
+      <div class="subtitle" id="subtitle">
+        Deine zentrale KI-Plattform
+      </div>
+    </div>
+
+    <div class="card">
+
+      <h2 id="cardTitle">Neuen Auftrag erstellen</h2>
+
+      <p>
+        Beschreibe, was du erstellen möchtest.
+      </p>
+
+      <textarea
+        id="prompt"
+        placeholder="Zum Beispiel: Erstelle ein Bild von einer futuristischen Stadt bei Nacht..."
+      ></textarea>
+
+      <button class="generate" onclick="generate()">
+        Generieren
+      </button>
+
+      <div id="status"></div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+
+function openSection(section) {
+
+  document.getElementById("title").textContent = section;
+
+  document.getElementById("subtitle").textContent =
+    "AI Studio · " + section;
+
+  document.getElementById("cardTitle").textContent =
+    section + " verwalten";
+
+  document.getElementById("status").textContent = "";
+
+}
+
+function generate() {
+
+  const prompt =
+    document.getElementById("prompt").value.trim();
+
+  if (!prompt) {
+
+    document.getElementById("status").textContent =
+      "Bitte zuerst einen Prompt eingeben.";
+
+    return;
+  }
+
+  document.getElementById("status").textContent =
+    "Auftrag angenommen: " + prompt;
+
+}
+
+</script>
+
 </body>
 </html>
