@@ -3,19 +3,19 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Nur POST erlaubt" });
   }
 
+  const { prompt } = req.body || {};
+
+  if (!prompt || !prompt.trim()) {
+    return res.status(400).json({ error: "Prompt fehlt" });
+  }
+
+  const token = process.env.REPLICATE_API_TOKEN;
+
+  if (!token) {
+    return res.status(500).json({ error: "REPLICATE_API_TOKEN fehlt" });
+  }
+
   try {
-    const { prompt } = req.body || {};
-
-    if (!prompt?.trim()) {
-      return res.status(400).json({ error: "Prompt fehlt" });
-    }
-
-    const token = process.env.REPLICATE_API_TOKEN;
-
-    if (!token) {
-      return res.status(500).json({ error: "REPLICATE_API_TOKEN fehlt" });
-    }
-
     const response = await fetch(
       "https://api.replicate.com/v1/models/black-forest-labs/flux-schnell/predictions",
       {
@@ -26,7 +26,9 @@ export default async function handler(req, res) {
           Prefer: "wait"
         },
         body: JSON.stringify({
-          input: { prompt: prompt.trim() }
+          input: {
+            prompt: prompt.trim()
+          }
         })
       }
     );
@@ -45,7 +47,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     return res.status(500).json({
-      error: error.message || "Serverfehler"
+      error: error.message
     });
   }
 }
